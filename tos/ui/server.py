@@ -62,12 +62,15 @@ def _make_handler(platform: TicketingPlatform, static_dir: Path) -> type[BaseHTT
             requested = len(order["requested_seats"])
             if confirmed == requested:
                 message = f"{confirmed} seat(s) booked successfully."
+                status = HTTPStatus.CREATED
             elif confirmed > 0:
                 message = f"{confirmed} of {requested} seat(s) were booked. The rest were already taken."
+                status = HTTPStatus.OK
             else:
                 message = "Those seats were taken before checkout completed. Please choose another set."
+                status = HTTPStatus.CONFLICT
 
-            self._send_json({"message": message, "order": order}, status=HTTPStatus.CREATED)
+            self._send_json({"message": message, "order": order}, status=status)
 
         def log_message(self, format: str, *args: object) -> None:
             return

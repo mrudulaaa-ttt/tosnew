@@ -13,6 +13,8 @@ const state = {
   osOpen: false,
 };
 
+const MY_BOOKINGS_KEY = "tos_my_bookings";
+
 const refs = {
   eventSearch:      document.querySelector("#event-search"),
   bannerCard:       document.querySelector("#banner-card"),
@@ -99,6 +101,41 @@ function showToast(msg) {
   refs.successToast.classList.remove("hidden");
   setTimeout(() => refs.successToast.classList.add("hidden"), 5000);
 }
+
+function loadStoredBookings() {
+  try {
+    return JSON.parse(sessionStorage.getItem(MY_BOOKINGS_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveStoredBookings(bookings) {
+  sessionStorage.setItem(MY_BOOKINGS_KEY, JSON.stringify(bookings));
+}
+
+function rememberBooking(order) {
+  const bookings = loadStoredBookings();
+  const nextBookings = [order, ...bookings.filter(item => item.order_id !== order.order_id)].slice(0, 12);
+  state.myBookings = nextBookings;
+  saveStoredBookings(nextBookings);
+}
+
+function syncStoredBookings() {
+  const knownOrders = new Map(loadStoredBookings().map(order => [order.order_id, order]));
+  const recentBookings = state.dashboard?.recent_bookings || [];
+  for (const booking of recentBookings) {
+    if (knownOrders.has(booking.order_id)) {
+      knownOrders.set(booking.order_id, booking);
+    }
+  }
+  state.myBookings = [...knownOrders.values()]
+    .sort((a, b) => (b.created_at_value || 0) - (a.created_at_value || 0))
+    .slice(0, 12);
+  saveStoredBookings(state.myBookings);
+}
+
+state.myBookings = loadStoredBookings();
 
 /* ============================================================
    RENDER: BANNER
@@ -325,7 +362,7 @@ function renderOSMetrics() {
    RENDER: MY BOOKINGS MODAL
    ============================================================ */
 function renderModalBookings() {
-  const bookings = state.dashboard?.recent_bookings || [];
+  const bookings = state.myBookings || [];
   if (!bookings.length) {
     refs.modalBookingsList.innerHTML = `<p class="modal-empty">No bookings yet. Book some seats to see them here!</p>`;
     return;
@@ -379,6 +416,7 @@ async function loadDashboard(silent = false) {
     state.dashboard = await res.json();
     state.eventId   = state.dashboard.selected_event.event_id;
     state.showId    = state.dashboard.selected_show.show_id;
+    syncStoredBookings();
     reconcileSelectedSeats();
     render();
   } catch (err) {
@@ -434,9 +472,12 @@ async function submitBooking(event) {
       body: JSON.stringify(payload),
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Booking could not be completed.");
+    if (!res.ok) throw new Error(data.error || data.message || "Booking could not be completed.");
 
-    // Success
+    if ((data.order?.confirmed_seats || []).length > 0) {
+      rememberBooking(data.order);
+    }
+
     setFeedback(data.message, "success");
     showToast(data.message);
     state.selectedSeats = [];
