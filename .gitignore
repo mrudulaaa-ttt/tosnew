@@ -1,4 +1,4 @@
-__pycache__/
+﻿__pycache__/
 *.pyc
 *.pyo
 *.pyd
@@ -8,5 +8,7 @@ venv/
 .env
 tos/data/logs.json
 tos/data/bookings.json
+tos/data/kernel_fs.log
+tos/data/storefront_status.txt
 tos/**/__pycache__/
 .fetch-client/

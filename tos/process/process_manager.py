@@ -103,3 +103,26 @@ class ProcessManager:
     def count_active(self) -> int:
         with self._lock:
             return sum(1 for p in self.process_table.values() if p.state != ProcessState.TERMINATED)
+
+    def snapshot(self) -> dict[str, object]:
+        with self._lock:
+            return {
+                "running_process": self.running_process,
+                "ready_queue": list(self.ready_queue),
+                "waiting_queue": list(self.waiting_queue),
+                "processes": [
+                    {
+                        "pid": proc.pid,
+                        "priority": proc.priority,
+                        "required_seat": proc.required_seat,
+                        "state": proc.state.value,
+                        "allocated_seat": proc.allocated_seat,
+                        "completed": proc.completed,
+                        "arrival_time": proc.pcb.arrival_time,
+                        "burst_time": proc.pcb.burst_time,
+                        "pages_required": proc.pcb.pages_required,
+                        "role": proc.pcb.role,
+                    }
+                    for proc in self.process_table.values()
+                ],
+            }

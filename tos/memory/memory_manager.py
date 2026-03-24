@@ -123,3 +123,13 @@ class MemoryManager:
             except ValueError:
                 pass
             self.free_frames += 1
+
+    def snapshot(self) -> dict[str, object]:
+        with self._lock:
+            return {
+                "total_frames": self.total_frames,
+                "free_frames": self.free_frames,
+                "used_frames": self.total_frames - self.free_frames,
+                "partition_usage": dict(self.partition_usage),
+                "page_table": {pid: list(frames) for pid, frames in self.page_table.items()},
+            }

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShowGrid — Tickets & Experiences</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand-lockup">
+        <div class="brand-mark">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2L12.4 7.6L18 8.2L13.8 12.2L15 18L10 15L5 18L6.2 12.2L2 8.2L7.6 7.6L10 2Z" fill="white"/></svg>
+        </div>
+        <div>
+          <p class="brand-name">ShowGrid</p>
+          <p class="brand-sub">Tickets &amp; Experiences</p>
+        </div>
+      </div>
+      <div class="search-wrapper">
+        <label class="search-shell" for="event-search">
+          <svg class="search-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input id="event-search" type="search" placeholder="Search events, venues, genres…" autocomplete="off" />
+        </label>
+      </div>
+      <div class="topbar-right">
+        <div class="city-pill">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          Bengaluru
+        </div>
+        <button class="nav-btn" id="my-bookings-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 5V3m8 2V3M3 10h18"/></svg>
+          My Bookings
+        </button>
+        <div class="kernel-indicator" id="kernel-status">
+          <span class="kernel-dot"></span>
+          <span class="kernel-label">Kernel Live</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <section class="hero-strip">
+        <article id="banner-card" class="banner-card ruby">
+          <div class="banner-copy">
+            <div class="banner-top-row">
+              <span id="event-badge" class="eyebrow-pill">Hot</span>
+              <div class="banner-meta-chips">
+                <span id="event-format" class="meta-tag"></span>
+                <span id="event-language" class="meta-tag"></span>
+                <span id="event-duration" class="meta-tag"></span>
+              </div>
+            </div>
+            <h1 id="event-title">Red Room Rewind</h1>
+            <p id="event-subtitle" class="banner-subtitle">Retro pop concert</p>
+            <p id="event-about" class="banner-about"></p>
+            <div class="banner-venue-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+              <span id="event-venue" class="venue-text"></span>
+            </div>
+            <div class="banner-actions">
+              <button class="cta-primary" onclick="document.querySelector('.booking-shell').scrollIntoView({behavior:'smooth'})">
+                Book Seats
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+          <div id="event-poster" class="poster-card ruby">
+            <div class="poster-inner">
+              <p class="poster-tag">Tonight</p>
+              <p id="poster-title" class="poster-title">Red Room Rewind</p>
+              <div class="poster-decoration"></div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="events-section">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Discover</p>
+            <h2>Now Booking</h2>
+          </div>
+          <div class="filter-row">
+            <button class="filter-chip active" data-filter="all">All</button>
+            <button class="filter-chip" data-filter="concert">Concert</button>
+            <button class="filter-chip" data-filter="comedy">Comedy</button>
+            <button class="filter-chip" data-filter="theatre">Theatre</button>
+          </div>
+        </div>
+        <div id="events-grid" class="events-grid"></div>
+      </section>
+
+      <section class="booking-shell">
+        <div class="seat-column">
+          <article class="panel-card showtime-card">
+            <div class="panel-card-header">
+              <div>
+                <p class="section-kicker">Step 1 of 3</p>
+                <h2>Choose a Showtime</h2>
+              </div>
+            </div>
+            <div id="showtime-list" class="showtime-list"></div>
+          </article>
+
+          <article class="panel-card seat-card">
+            <div class="seat-card-head">
+              <div>
+                <p class="section-kicker">Step 2 of 3</p>
+                <h2 id="selected-show-title">Select Your Seats</h2>
+                <p id="selected-show-copy" class="section-copy"></p>
+              </div>
+              <div id="seat-stats" class="seat-stats"></div>
+            </div>
+            <div id="price-bands" class="price-bands"></div>
+            <div id="legend" class="legend"></div>
+            <div class="screen-shell">
+              <div class="screen-arc"></div>
+              <p class="screen-label">Stage / Screen — All eyes this way</p>
+            </div>
+            <div id="seat-map" class="seat-map"></div>
+            <p class="seat-tip">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+              Click seats to select · Maximum 8 seats per booking
+            </p>
+          </article>
+        </div>
+
+        <aside class="panel-card summary-card">
+          <div class="panel-card-header">
+            <div>
+              <p class="section-kicker">Step 3 of 3</p>
+              <h2>Checkout</h2>
+            </div>
+          </div>
+
+          <div class="summary-event-block">
+            <div class="summary-event-poster" id="summary-poster-mini"></div>
+            <div class="summary-event-info">
+              <strong id="summary-event">Red Room Rewind</strong>
+              <p id="summary-show" class="summary-show-label">7:30 PM</p>
+            </div>
+          </div>
+
+          <div class="summary-divider"></div>
+
+          <div class="summary-block">
+            <div class="summary-block-header">
+              <span class="summary-label">Selected Seats</span>
+              <span id="seat-count-badge" class="seat-count-badge">0 seats</span>
+            </div>
+            <div id="selected-seats" class="selected-seats">
+              <div class="empty-seat-prompt">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 9V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v2"/><path d="M2 11v5a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v1H6v-1a2 2 0 0 0-4 0z"/></svg>
+                No seats selected yet
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-total-row">
+            <span class="summary-total-label">Total Amount</span>
+            <strong id="summary-total" class="summary-total-amount">₹0</strong>
+          </div>
+
+          <div class="summary-divider"></div>
+
+          <form id="booking-form" class="booking-form">
+            <label class="field">
+              <span class="field-label">Full Name</span>
+              <div class="input-wrapper">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <input type="text" name="customer_name" placeholder="Aarav Menon" required autocomplete="name" />
+              </div>
+            </label>
+            <label class="field">
+              <span class="field-label">Email Address</span>
+              <div class="input-wrapper">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                <input type="email" name="email" placeholder="aarav@example.com" required autocomplete="email" />
+              </div>
+            </label>
+            <button id="book-button" type="submit" class="primary-button">
+              <span class="btn-text">Confirm Booking</span>
+              <svg class="btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </form>
+
+          <div class="os-note">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Seats locked via kernel mutex — prevents double-booking</span>
+          </div>
+
+          <p id="form-feedback" class="form-feedback" aria-live="polite"></p>
+        </aside>
+      </section>
+
+      <section class="os-panel-section">
+        <div class="os-panel-toggle" id="os-panel-toggle">
+          <div class="os-panel-toggle-left">
+            <div class="os-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            </div>
+            <div>
+              <p class="os-panel-kicker">OS Concepts Demo</p>
+              <p class="os-panel-title">Kernel &amp; Scheduler Activity</p>
+            </div>
+          </div>
+          <div class="os-toggle-right">
+            <span class="os-live-badge">LIVE</span>
+            <svg class="os-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+          </div>
+        </div>
+        <div class="os-panel-body" id="os-panel-body">
+          <div class="os-metrics-grid">
+            <div class="os-metric-card">
+              <p class="os-metric-label">Scheduler Algorithm</p>
+              <p class="os-metric-value" id="os-scheduler">FCFS</p>
+              <p class="os-metric-sub">First-Come First-Served</p>
+            </div>
+            <div class="os-metric-card">
+              <p class="os-metric-label">Worker Threads</p>
+              <p class="os-metric-value" id="os-workers">—</p>
+              <p class="os-metric-sub">Parallel booking processors</p>
+            </div>
+            <div class="os-metric-card">
+              <p class="os-metric-label">Load Sample</p>
+              <p class="os-metric-value" id="os-load">—</p>
+              <p class="os-metric-sub">Mean process exec time (ms)</p>
+            </div>
+            <div class="os-metric-card">
+              <p class="os-metric-label">Concurrency Lock</p>
+              <p class="os-metric-value" id="os-sync">Mutex</p>
+              <p class="os-metric-sub">Critical section guard</p>
+            </div>
+          </div>
+          <div class="os-concepts-grid">
+            <div class="os-concept-chip"><span class="os-concept-dot green"></span>Process Scheduling (FCFS)</div>
+            <div class="os-concept-chip"><span class="os-concept-dot blue"></span>Semaphores — seat locking</div>
+            <div class="os-concept-chip"><span class="os-concept-dot amber"></span>Deadlock avoidance</div>
+            <div class="os-concept-chip"><span class="os-concept-dot purple"></span>Memory paging simulation</div>
+            <div class="os-concept-chip"><span class="os-concept-dot red"></span>Disk scheduling (SCAN)</div>
+            <div class="os-concept-chip"><span class="os-concept-dot teal"></span>Kernel filesystem log</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="recent-section">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Activity Feed</p>
+            <h2>Recent Bookings</h2>
+          </div>
+          <span class="live-badge">
+            <span class="live-dot"></span>
+            Live updates every 5s
+          </span>
+        </div>
+        <div id="recent-bookings" class="recent-bookings"></div>
+      </section>
+    </main>
+
+    <div id="bookings-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2>My Bookings</h2>
+          <button class="modal-close" id="modal-close-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div id="modal-bookings-list" class="modal-bookings-list">
+          <p class="modal-empty">No bookings yet. Book some seats to see them here!</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="success-toast" class="success-toast hidden">
+      <div class="toast-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+      <div class="toast-content">
+        <p class="toast-title">Booking Confirmed!</p>
+        <p id="toast-message" class="toast-message"></p>
+      </div>
+      <button class="toast-close" onclick="document.getElementById('success-toast').classList.add('hidden')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>
